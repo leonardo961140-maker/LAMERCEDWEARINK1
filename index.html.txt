@@ -1,0 +1,669 @@
+```html
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lamerced Wearink - Diseño de Camisetas</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        body {
+            background: #f8f9fa;
+            color: #212529;
+            line-height: 1.6;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        header {
+            text-align: center;
+            padding: 40px 20px 30px;
+            position: relative;
+        }
+        
+        .logo-container {
+            margin-bottom: 20px;
+        }
+        
+        .logo {
+            width: 300px;
+            height: auto;
+            max-width: 100%;
+        }
+        
+        .tagline {
+            font-size: 1.4rem;
+            color: #6c757d;
+            font-weight: 300;
+            max-width: 600px;
+            margin: 0 auto;
+            letter-spacing: 1px;
+        }
+        
+        .social-links {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-link {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .whatsapp {
+            background: #25D366;
+        }
+        
+        .instagram {
+            background: #e74c3c;
+            background: linear-gradient(45deg, #f77737, #fd1d1d, #fcb045);
+        }
+        
+        .social-link:hover {
+            transform: translateY(-5px);
+        }
+        
+        .design-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin: 60px 0 40px;
+            justify-content: center;
+        }
+        
+        .upload-section {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        .preview-section {
+            flex: 1;
+            min-width: 300px;
+            max-width: 500px;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        }
+        
+        h2 {
+            font-size: 1.8rem;
+            color: #000;
+            margin-bottom: 25px;
+            font-weight: 600;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        
+        .upload-area {
+            border: 3px dashed #e0e0e0;
+            border-radius: 12px;
+            padding: 40px 20px;
+            text-align: center;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #fafafa;
+        }
+        
+        .upload-area:hover {
+            border-color: #e74c3c;
+            background: #fff8f8;
+        }
+        
+        .upload-area.active {
+            border-color: #e74c3c;
+            background: #fff8f8;
+        }
+        
+        .upload-icon {
+            font-size: 3rem;
+            color: #999;
+            margin-bottom: 15px;
+        }
+        
+        .upload-text {
+            color: #666;
+            margin-bottom: 15px;
+        }
+        
+        .upload-btn {
+            background: #e74c3c;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+        
+        .upload-btn:hover {
+            background: #c0392b;
+            transform: translateY(-2px);
+        }
+        
+        input[type="file"] {
+            display: none;
+        }
+        
+        .preview-image-container {
+            position: relative;
+            width: 300px;
+            height: 400px;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        }
+        
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .uploaded-design {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 150px;
+            height: 150px;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            cursor: move;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 10;
+        }
+        
+        .uploaded-design.visible {
+            opacity: 1;
+        }
+        
+        .uploaded-design.dragging {
+            cursor: grabbing;
+            z-index: 20;
+        }
+        
+        .no-design {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #999;
+            font-size: 1.1rem;
+            text-align: center;
+            pointer-events: none;
+            background: rgba(255,255,255,0.8);
+            padding: 10px 20px;
+            border-radius: 5px;
+            z-index: 1;
+        }
+        
+        .controls {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .controls.visible {
+            display: block;
+        }
+        
+        .control-group {
+            margin-bottom: 15px;
+        }
+        
+        .control-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #000;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+        
+        .slider {
+            width: 100%;
+            height: 5px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            -webkit-appearance: none;
+        }
+        
+        .slider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #e74c3c;
+            cursor: pointer;
+        }
+        
+        .file-info {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            display: none;
+        }
+        
+        .file-info.visible {
+            display: block;
+        }
+        
+        .file-info h4 {
+            color: #000;
+            margin-bottom: 5px;
+        }
+        
+        .file-info p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .send-btn {
+            background: #25D366;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 25px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .send-btn:hover {
+            background: #128C7E;
+            transform: translateY(-2px);
+        }
+        
+        .send-btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .instructions {
+            margin-top: 20px;
+            padding: 15px;
+            background: #e8f5e8;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #2e7d32;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 40px 20px;
+            color: #6c757d;
+            font-size: 1rem;
+            margin-top: 60px;
+        }
+        
+        @media (max-width: 768px) {
+            .design-container {
+                flex-direction: column;
+            }
+            
+            .logo {
+                width: 250px;
+            }
+            
+            .preview-image-container {
+                width: 250px;
+                height: 330px;
+            }
+            
+            .uploaded-design {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .social-links {
+                top: 10px;
+                right: 10px;
+            }
+            
+            .social-link {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="social-links">
+                <a href="https://wa.me/34627157018" target="_blank" class="social-link whatsapp">💬</a>
+                <a href="https://instagram.com/lamerced_wearink" target="_blank" class="social-link instagram">📸</a>
+            </div>
+            <div class="logo-container">
+                <a href="https://postimg.cc/CRzsnVWj" target="_blank">
+                    <img src="https://i.postimg.cc/sgJ68jm0/logo1-jpg.png" alt="logo1-jpg" class="logo" border="0">
+                </a>
+            </div>
+            <p class="tagline">Diseña tu camiseta personalizada - Tu estilo, tu identidad</p>
+        </header>
+        
+        <div class="design-container">
+            <div class="upload-section">
+                <h2>Subir Diseño</h2>
+                <div class="upload-area" id="uploadArea">
+                    <div class="upload-icon">📁</div>
+                    <p class="upload-text">Arrastra y suelta tu diseño aquí</p>
+                    <p class="upload-text">o</p>
+                    <button class="upload-btn">Seleccionar archivo</button>
+                    <input type="file" id="fileInput" accept="*">
+                </div>
+                
+                <div class="file-info" id="fileInfo">
+                    <h4>Archivo seleccionado:</h4>
+                    <p><strong>Nombre:</strong> <span id="fileName">-</span></p>
+                    <p><strong>Tipo:</strong> <span id="fileType">-</span></p>
+                    <p><strong>Tamaño:</strong> <span id="fileSize">-</span></p>
+                </div>
+                
+                <div class="controls" id="controls">
+                    <div class="control-group">
+                        <label>Posición X</label>
+                        <input type="range" min="0" max="300" value="150" class="slider" id="posX">
+                    </div>
+                    <div class="control-group">
+                        <label>Posición Y</label>
+                        <input type="range" min="0" max="400" value="200" class="slider" id="posY">
+                    </div>
+                    <div class="control-group">
+                        <label>Tamaño</label>
+                        <input type="range" min="50" max="300" value="150" class="slider" id="size">
+                    </div>
+                </div>
+                
+                <div class="instructions">
+                    <p>💡 Una vez subido tu diseño, puedes moverlo y ajustar su tamaño. Luego pulsa "Enviar por WhatsApp"</p>
+                </div>
+                
+                <button id="sendBtn" class="send-btn" disabled>
+                    <span>📤</span> Enviar por WhatsApp
+                </button>
+            </div>
+            
+            <div class="preview-section">
+                <h2>Previsualización</h2>
+                <div class="preview-image-container">
+                    <a href="https://postimg.cc/dL08gYQz" target="_blank">
+                        <img src="https://i.postimg.cc/sDYwQjkD/freepik-assistant-1756432233595.png" alt="freepik-assistant-1756432233595" class="preview-image">
+                    </a>
+                    <div class="uploaded-design" id="uploadedDesign"></div>
+                    <div class="no-design">Sube tu diseño para verlo aquí</div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>Contacto: 627 157 018 | modisterialamerced@gmail.com</p>
+            <p>Calle La Vía 1, Denia, Alicante</p>
+            <p>© 2023 Lamerced Wearink - Estampado de camisetas personalizadas</p>
+        </footer>
+    </div>
+
+    <script>
+        // Elements
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadedDesign = document.getElementById('uploadedDesign');
+        const fileInfo = document.getElementById('fileInfo');
+        const controls = document.getElementById('controls');
+        const posX = document.getElementById('posX');
+        const posY = document.getElementById('posY');
+        const size = document.getElementById('size');
+        const fileName = document.getElementById('fileName');
+        const fileType = document.getElementById('fileType');
+        const fileSize = document.getElementById('fileSize');
+        const noDesign = document.querySelector('.no-design');
+        const sendBtn = document.getElementById('sendBtn');
+        
+        let selectedFile = null;
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+        
+        // Upload area click event
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+        
+        // File selection
+        fileInput.addEventListener('change', handleFileSelection);
+        
+        // Drag and drop events
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.classList.add('active');
+        });
+        
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.classList.remove('active');
+        });
+        
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.classList.remove('active');
+            
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileSelection();
+            }
+        });
+        
+        // Handle file selection
+        function handleFileSelection() {
+            const file = fileInput.files[0];
+            if (!file) return;
+            
+            selectedFile = file;
+            
+            // Display file info
+            fileName.textContent = file.name;
+            fileType.textContent = file.type || 'Desconocido';
+            fileSize.textContent = formatFileSize(file.size);
+            fileInfo.classList.add('visible');
+            
+            // Create image preview if it's an image
+            if (file.type.match('image.*')) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    uploadedDesign.style.backgroundImage = `url(${e.target.result})`;
+                    uploadedDesign.classList.add('visible');
+                    noDesign.style.display = 'none';
+                };
+                reader.readAsDataURL(file);
+            } else {
+                // For non-image files, show a generic icon
+                uploadedDesign.style.backgroundImage = 'url("https://placehold.co/150x150/cccccc/666666?text=📁")';
+                uploadedDesign.classList.add('visible');
+                noDesign.style.display = 'none';
+            }
+            
+            // Show controls
+            controls.classList.add('visible');
+            
+            // Enable send button
+            sendBtn.disabled = false;
+        }
+        
+        // Format file size
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // Design movement
+        uploadedDesign.addEventListener('mousedown', startDrag);
+        document.addEventListener('mousemove', drag);
+        document.addEventListener('mouseup', stopDrag);
+        
+        function startDrag(e) {
+            if (!uploadedDesign.classList.contains('visible')) return;
+            
+            isDragging = true;
+            uploadedDesign.classList.add('dragging');
+            
+            const rect = uploadedDesign.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+            
+            // Update sliders
+            posX.value = Math.round(rect.left + rect.width/2);
+            posY.value = Math.round(rect.top + rect.height/2);
+            
+            e.preventDefault();
+        }
+        
+        function drag(e) {
+            if (!isDragging) return;
+            
+            const containerRect = document.querySelector('.preview-image-container').getBoundingClientRect();
+            let newX = e.clientX - offsetX;
+            let newY = e.clientY - offsetY;
+            
+            // Constrain within container
+            newX = Math.max(0, Math.min(newX, containerRect.width - uploadedDesign.offsetWidth));
+            newY = Math.max(0, Math.min(newY, containerRect.height - uploadedDesign.offsetHeight));
+            
+            uploadedDesign.style.left = `${newX}px`;
+            uploadedDesign.style.top = `${newY}px`;
+            
+            // Update sliders
+            posX.value = Math.round(newX + uploadedDesign.offsetWidth/2);
+            posY.value = Math.round(newY + uploadedDesign.offsetHeight/2);
+        }
+        
+        function stopDrag() {
+            isDragging = false;
+            uploadedDesign.classList.remove('dragging');
+        }
+        
+        // Slider controls
+        posX.addEventListener('input', () => {
+            if (uploadedDesign.classList.contains('visible')) {
+                const containerRect = document.querySelector('.preview-image-container').getBoundingClientRect();
+                const designRect = uploadedDesign.getBoundingClientRect();
+                const centerX = parseInt(posX.value);
+                const newX = centerX - designRect.width/2;
+                
+                // Constrain within container
+                const finalX = Math.max(0, Math.min(newX, containerRect.width - designRect.width));
+                uploadedDesign.style.left = `${finalX}px`;
+            }
+        });
+        
+        posY.addEventListener('input', () => {
+            if (uploadedDesign.classList.contains('visible')) {
+                const containerRect = document.querySelector('.preview-image-container').getBoundingClientRect();
+                const designRect = uploadedDesign.getBoundingClientRect();
+                const centerY = parseInt(posY.value);
+                const newY = centerY - designRect.height/2;
+                
+                // Constrain within container
+                const finalY = Math.max(0, Math.min(newY, containerRect.height - designRect.height));
+                uploadedDesign.style.top = `${finalY}px`;
+            }
+        });
+        
+        size.addEventListener('input', () => {
+            if (uploadedDesign.classList.contains('visible')) {
+                const newSize = parseInt(size.value);
+                uploadedDesign.style.width = `${newSize}px`;
+                uploadedDesign.style.height = `${newSize}px`;
+                
+                // Keep centered when resizing
+                const containerRect = document.querySelector('.preview-image-container').getBoundingClientRect();
+                const currentRect = uploadedDesign.getBoundingClientRect();
+                const centerX = currentRect.left - containerRect.left + currentRect.width/2;
+                const centerY = currentRect.top - containerRect.top + currentRect.height/2;
+                
+                const newLeft = centerX - newSize/2;
+                const newTop = centerY - newSize/2;
+                
+                uploadedDesign.style.left = `${newLeft}px`;
+                uploadedDesign.style.top = `${newTop}px`;
+            }
+        });
+        
+        // Send button click
+        sendBtn.addEventListener('click', () => {
+            if (!selectedFile) {
+                alert('Por favor, selecciona un archivo primero');
+                return;
+            }
+            
+            // Get current design properties
+            const designStyle = window.getComputedStyle(uploadedDesign);
+            const position = {
+                x: designStyle.left,
+                y: designStyle.top,
+                width: designStyle.width,
+                height: designStyle.height
+            };
+            
+            // Create a message with design details
+            const message = `Hola! Quiero encargar una camiseta personalizada.\n\nDetalles del diseño:\n- Nombre del archivo: ${selectedFile.name}\n- Tipo: ${selectedFile.type || 'Desconocido'}\n- Tamaño: ${formatFileSize(selectedFile.size)}\n- Posición: ${position.x}, ${position.y}\n- Tamaño: ${position.width} x ${position.height}\n\nAdjunto el diseño para su revisión.`;
+            
+            // Open WhatsApp with the message
+            const whatsappUrl = `https://wa.me/34627157018?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+            
+            alert('Se abrirá WhatsApp con tu mensaje pre-escrito. Por favor, adjunta manualmente tu archivo cuando envíes el mensaje.');
+        });
+    </script>
+</body>
+</html>
+```
